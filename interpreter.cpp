@@ -1,0 +1,87 @@
+//
+// Created by ktulhy on 15.07.16.
+//
+
+#include "interpreter.h"
+
+
+void printInfo(Interpreter *interpreter);
+
+void initInterpreter(Interpreter *interpreter) {
+    interpreter->PC = 0;
+    interpreter->bytecodePos = 0;
+    interpreter->valuesI = 0;
+    interpreter->argsI = 0;
+    *(interpreter->builtins) = printInfo;
+}
+
+#define getBytecode() interpreter->bytecode[interpreter->PC++];
+
+void step(Interpreter *interpreter) {
+    u_char bytecode = getBytecode();
+    switch (bytecode) {
+        case PUSH_VALUE: {
+            u_char type = getBytecode();
+            Object *object = newObject();
+            if check_err return;
+            object->type = type;
+
+            switch (type) {
+                case OBJECT_TYPE_LINT:
+                    object->vLInt = *(int *) (interpreter->bytecode + interpreter->PC);
+                    interpreter->PC += sizeof(int);
+                    break;
+                case OBJECT_TYPE_ULINT:
+                    object->vULInt = *(u_int *) (interpreter->bytecode + interpreter->PC);
+                    interpreter->PC += sizeof(u_int);
+                    break;
+                case OBJECT_TYPE_DOUBLE:
+                    object->vDouble = *(double *) (interpreter->bytecode + interpreter->PC);
+                    interpreter->PC += sizeof(double);
+                    break;
+                case OBJECT_TYPE_CHAR:
+                    object->vChar = *(char *) (interpreter->bytecode + interpreter->PC);
+                    interpreter->PC += sizeof(char);
+                    break;
+                default:
+                    natrix_error = UNKNOWN_VALUE_TYPE_ERR;
+            }
+            if check_err break;
+            interpreter->valuesStack[interpreter->valuesI++] = object;
+            break;
+        }
+        case PUSH_ARG: {
+            if (0 == interpreter->valuesI) {
+                natrix_error = NO_VALUE_ERR;
+                break;
+            }
+            interpreter->argsStack[interpreter->argsI++] =
+                    interpreter->valuesStack[--interpreter->valuesI];
+            break;
+        }
+        case CALL_BUILTIN: {
+            u_char number = getBytecode();
+            interpreter->builtins[number](interpreter);
+            break;
+        }
+        default:
+            natrix_error = UNKNOWN_BYTECODE;
+            break;
+    }
+}
+
+Object *_popArg(Interpreter *interpreter) {
+    if (interpreter->argsI == 0) {
+        natrix_error = NO_ARG_ERR;
+        return NULL;
+    }
+    return interpreter->argsStack[--interpreter->argsI];
+}
+
+void printInfo(Interpreter *interpreter) {
+    Object *object = _popArg(interpreter);
+    if check_err
+        return;
+
+    printObjectInfo(object);
+}
