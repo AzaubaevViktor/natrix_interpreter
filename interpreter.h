@@ -6,10 +6,22 @@
 #include "errors.h"
 
 #define PUSH_VALUE (1)
+/*
+ * PUSH_VALUE (TYPE 1b) (VALUE ?b)
+ * Загружает объект нужного типа в values
+ */
 #define POP_VALUE (2)
-#define PUSH_ARG (3)
-#define CLEAR_ARGS (4)
-#define CALL_BUILTIN (5)
+#define CALL (3)
+/*
+ * CALL (NUMBER 1b)
+ * Вызывает функцию под номером
+ */
+#define STORE_VALUE (4)
+/*
+ * STORE_VALUE (NUMBER 1b)
+ * Берёт из value и сохраняет в namespace под нужным номером
+ */
+
 
 
 typedef struct _Interpreter {
@@ -18,8 +30,6 @@ typedef struct _Interpreter {
     int PC;
     Object *valuesStack[100];
     int valuesI;
-    Object *argsStack[100];
-    int argsI;
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;
 

@@ -11,7 +11,6 @@ void initInterpreter(Interpreter *interpreter) {
     interpreter->PC = 0;
     interpreter->bytecodePos = 0;
     interpreter->valuesI = 0;
-    interpreter->argsI = 0;
     *(interpreter->builtins) = printInfo;
 }
 
@@ -50,16 +49,7 @@ void step(Interpreter *interpreter) {
             interpreter->valuesStack[interpreter->valuesI++] = object;
             break;
         }
-        case PUSH_ARG: {
-            if (0 == interpreter->valuesI) {
-                natrix_error = NO_VALUE_ERR;
-                break;
-            }
-            interpreter->argsStack[interpreter->argsI++] =
-                    interpreter->valuesStack[--interpreter->valuesI];
-            break;
-        }
-        case CALL_BUILTIN: {
+        case CALL: {
             u_char number = getBytecode();
             interpreter->builtins[number](interpreter);
             break;
@@ -71,11 +61,11 @@ void step(Interpreter *interpreter) {
 }
 
 Object *_popArg(Interpreter *interpreter) {
-    if (interpreter->argsI == 0) {
+    if (interpreter->valuesI == 0) {
         natrix_error = NO_ARG_ERR;
         return NULL;
     }
-    return interpreter->argsStack[--interpreter->argsI];
+    return interpreter->valuesStack[--interpreter->valuesI];
 }
 
 void printInfo(Interpreter *interpreter) {
