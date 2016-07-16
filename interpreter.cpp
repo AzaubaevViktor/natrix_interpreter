@@ -10,7 +10,7 @@ void printInfo(Interpreter *interpreter);
 void initInterpreter(Interpreter *interpreter) {
     interpreter->PC = 0;
     interpreter->bytecodePos = 0;
-    interpreter->valuesI = 0;
+    daInit(&interpreter->valuesStack);
     *(interpreter->builtins) = printInfo;
 }
 
@@ -19,6 +19,10 @@ void initInterpreter(Interpreter *interpreter) {
 void step(Interpreter *interpreter) {
     u_char bytecode = getBytecode();
     switch (bytecode) {
+        case END: {
+            natrix_error = END_BYTECODE_ERR;
+            break;
+        }
         case PUSH_VALUE: {
             u_char type = getBytecode();
             Object *object = newObject();
@@ -46,7 +50,8 @@ void step(Interpreter *interpreter) {
                     natrix_error = UNKNOWN_VALUE_TYPE_ERR;
             }
             if check_err break;
-            interpreter->valuesStack[interpreter->valuesI++] = object;
+
+            daPush(&interpreter->valuesStack, object);
             break;
         }
         case CALL: {
@@ -60,18 +65,9 @@ void step(Interpreter *interpreter) {
     }
 }
 
-Object *_popArg(Interpreter *interpreter) {
-    if (interpreter->valuesI == 0) {
-        natrix_error = NO_ARG_ERR;
-        return NULL;
-    }
-    return interpreter->valuesStack[--interpreter->valuesI];
-}
-
 void printInfo(Interpreter *interpreter) {
-    Object *object = _popArg(interpreter);
-    if check_err
-        return;
-
-    printObjectInfo(object);
+    Object *object = daPop(&interpreter->valuesStack);
+    if (!check_err) {
+        printObjectInfo(object);
+    }
 }

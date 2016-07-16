@@ -8,15 +8,15 @@ int main() {
     cout << "Hello, World!" << endl;
     Interpreter interpreter;
     initInterpreter(&interpreter);
-    memcpy(interpreter.bytecode, "\x01\x01\x01\x00\x00\x00\x03\x05\x00", 9);
+    memcpy(interpreter.bytecode, "\x01\x01\x01\x00\x00\x00\x03\x00\x00", 9);
     /*
      * PUSH_VALUE OBJECT_TYPE_LINT 1
-     * PUSH_ARG
-     * CALL_BUILTIN 0
+     * CALL 0
+     * END
      */
     while (1) {
         step(&interpreter);
-        if (natrix_error) {
+        if (check_err || check_end) {
             printf("Natrix error: %d\n", natrix_error);
             break;
         }

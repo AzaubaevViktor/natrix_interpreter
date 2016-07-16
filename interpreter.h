@@ -4,18 +4,24 @@
 #include <stdio.h>
 #include "natrix_object.h"
 #include "errors.h"
+#include "dynamic_array.h"
+
+#define END (0)
 
 #define PUSH_VALUE (1)
 /*
  * PUSH_VALUE (TYPE 1b) (VALUE ?b)
  * Загружает объект нужного типа в values
  */
+
 #define POP_VALUE (2)
+
 #define CALL (3)
 /*
  * CALL (NUMBER 1b)
  * Вызывает функцию под номером
  */
+
 #define STORE_VALUE (4)
 /*
  * STORE_VALUE (NUMBER 1b)
@@ -28,8 +34,9 @@ typedef struct _Interpreter {
     u_char bytecode[100];
     int bytecodePos;
     int PC;
-    Object *valuesStack[100];
-    int valuesI;
+
+    DynamicArray valuesStack;
+
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;
 
