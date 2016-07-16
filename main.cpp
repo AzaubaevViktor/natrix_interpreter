@@ -2,13 +2,11 @@
 #include <cstring>
 #include "interpreter.h"
 
-using namespace std;
 
 int main() {
-    cout << "Hello, World!" << endl;
     Interpreter interpreter;
     initInterpreter(&interpreter);
-    memcpy(interpreter.bytecode, "\x01\x01\x01\x00\x00\x00\x03\x00\x00", 9);
+    memcpy(interpreter.bytecode, "\x02\x01\x01\x00\x00\x00\x04\x00\xFE", 9);
     /*
      * PUSH_VALUE OBJECT_TYPE_LINT 1
      * CALL 0

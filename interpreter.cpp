@@ -19,6 +19,10 @@ void initInterpreter(Interpreter *interpreter) {
 void step(Interpreter *interpreter) {
     u_char bytecode = getBytecode();
     switch (bytecode) {
+        case NOP: {
+            ++interpreter->PC;
+            break;
+        }
         case END: {
             natrix_error = END_BYTECODE_ERR;
             break;

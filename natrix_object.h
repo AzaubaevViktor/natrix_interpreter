@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <cstdarg>
 #include "errors.h"
 
 #define OBJECT_TYPE_LINT (1)
