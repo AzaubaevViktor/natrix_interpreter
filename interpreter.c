@@ -11,6 +11,9 @@ void initInterpreter(Interpreter *interpreter) {
     interpreter->PC = 0;
     interpreter->bytecodePos = 0;
     daInit(&interpreter->valuesStack);
+    if check_err return;
+    daInit(&interpreter->values);
+    if check_err return;
     *(interpreter->builtins) = printInfo;
 }
 

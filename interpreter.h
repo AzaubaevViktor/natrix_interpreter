@@ -45,6 +45,8 @@ typedef struct _Interpreter {
 
     DynamicArray valuesStack;
 
+    DynamicArray values;
+
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;
 
