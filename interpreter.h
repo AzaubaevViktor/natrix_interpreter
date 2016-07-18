@@ -7,7 +7,7 @@
 #include "errors.h"
 #include "dynamic_array.h"
 
-#define NOP (0)
+#define NOP (0x0)
 /*
  * Пустая инструкция
  */
@@ -17,21 +17,21 @@
  * Конец байткода
  */
 
-#define PUSH_VALUE (2)
+#define PUSH_VALUE (0x2)
 /*
  * PUSH_VALUE (TYPE 1b) (VALUE ?b)
  * Загружает объект нужного типа в values
  */
 
-#define POP_VALUE (3)
+#define POP_VALUE (0x3)
 
-#define CALL (4)
+#define CALL (0x4)
 /*
  * CALL (NUMBER 1b)
  * Вызывает функцию под номером
  */
 
-#define STORE_VALUE (5)
+#define STORE_VALUE (0x5)
 /*
  * STORE_VALUE (NUMBER 1b)
  * Берёт из value и сохраняет в namespace под нужным номером
@@ -45,8 +45,6 @@ typedef struct _Interpreter {
     int PC;
 
     DynamicArray valuesStack;
-
-    DynamicArray values;
 
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;

@@ -15,20 +15,22 @@ Object *newObject() {
 void printObjectInfo(Object *object) {
     switch (object->type) {
         case OBJECT_TYPE_LINT:
-            printf("LINT: `%hi`\n", object->vLInt);
+            printf("LINT: `%hi`", object->vLInt);
             break;
         case OBJECT_TYPE_ULINT:
-            printf("ULINT: `%hu`\n", object->vULInt);
+            printf("ULINT: `%hu`", object->vULInt);
             break;
         case OBJECT_TYPE_DOUBLE:
-            printf("LINT: `%lf`\n", object->vDouble);
+            printf("LINT: `%lf`", object->vDouble);
             break;
         case OBJECT_TYPE_CHAR:
-            printf("LINT: `%c`\n", object->vChar);
+            printf("LINT: `%c`", object->vChar);
             break;
-
+        case OBJECT_TYPE_STRING:
+            printf("STRING: `%s`", object->vString);
+            break;
         default:
-            printf("Unknown type of object\n");
+            printf("Unknown type of object");
             break;
     }
 }

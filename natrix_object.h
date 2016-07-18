@@ -5,10 +5,11 @@
 #include <stdint.h>
 #include "errors.h"
 
-#define OBJECT_TYPE_LINT (1)
-#define OBJECT_TYPE_ULINT (2)
-#define OBJECT_TYPE_DOUBLE (3)
-#define OBJECT_TYPE_CHAR (4)
+#define OBJECT_TYPE_LINT (0x1)
+#define OBJECT_TYPE_ULINT (0x2)
+#define OBJECT_TYPE_DOUBLE (0x3)
+#define OBJECT_TYPE_CHAR (0x4)
+#define OBJECT_TYPE_STRING (0x5)
 
 typedef struct _Object {
     unsigned int type;
@@ -17,6 +18,7 @@ typedef struct _Object {
         uint16_t vULInt;
         double vDouble;
         uint8_t vChar;
+        uint8_t *vString;
     };
 } Object;
 
