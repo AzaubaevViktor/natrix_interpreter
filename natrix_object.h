@@ -20,7 +20,7 @@ typedef struct _Object {
     };
 } Object;
 
-Object *newObject();
+Object *newObjectE();
 void printObjectInfo(Object *object);
 int isInt(Object *object);
 int isDouble(Object *object);

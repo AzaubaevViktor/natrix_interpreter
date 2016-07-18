@@ -69,5 +69,5 @@ typedef struct _Interpreter {
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;
 
-void initInterpreter(Interpreter *interpreter);
-void step(Interpreter *interpreter);
+void inInitE(Interpreter *interpreter);
+void inStepE(Interpreter *interpreter);

@@ -5,7 +5,7 @@
 
 int main() {
     Interpreter interpreter;
-    initInterpreter(&interpreter);
+    inInitE(&interpreter);
     char bytecode[] = "\x02\x01\x10\x00\x00\x00"
             "\xCA\x00"
             "\x02\x05\x05hello"
@@ -34,7 +34,7 @@ int main() {
      * PUSH_VALUE OBJECT_TYPE_STRING 1 '\n'
      * PRINT_STR
      * STORE_VALUE
-     * CALL 1 // printNamespace
+     * CALL 1 // naPrint
      * PUSH_VALUE OBJECT_TYPE_STRING 5 'hello'
      * GET_VALUE
      * CALL 0
@@ -48,7 +48,7 @@ int main() {
      * END
      */
     while (1) {
-        step(&interpreter);
+        inStepE(&interpreter);
         if (check_err || check_end) {
             printf("Natrix error: %d\n", natrix_error);
             break;

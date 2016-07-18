@@ -4,7 +4,7 @@
 
 #include "natrix_object.h"
 
-Object *newObject() {
+Object *newObjectE() {
     Object *object = (Object *) calloc(1, sizeof(Object));
     if (!object) {
         natrix_error = ALLOC_ERR;

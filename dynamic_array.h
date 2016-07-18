@@ -11,8 +11,8 @@ typedef struct _DynamicArray {
     uint16_t len;
 } DynamicArray;
 
-void daInit(DynamicArray *array);
-void daCheckExtend(DynamicArray *array);
-void daPush(DynamicArray *array, Object *obj);
-Object *daPop(DynamicArray *array);
-Object *daGet(DynamicArray *array, int32_t n);
+void daInitE(DynamicArray *array);
+void daCheckExtendE(DynamicArray *array);
+void daPushE(DynamicArray *array, Object *obj);
+Object *daPopE(DynamicArray *array);
+Object *daGetE(DynamicArray *array, int32_t n);

@@ -1,6 +1,6 @@
 #include "dynamic_array.h"
 
-void daInit(DynamicArray *array) {
+void daInitE(DynamicArray *array) {
     array->values = (Object **) malloc(sizeof(Object *) * DYNAMIC_ARRAY_CHUNK_SIZE);
     if (!array->values) {
         natrix_error = ALLOC_ERR;
@@ -10,7 +10,7 @@ void daInit(DynamicArray *array) {
     }
 }
 
-void daCheckExtend(DynamicArray *array) {
+void daCheckExtendE(DynamicArray *array) {
     if (array->size == array->len) {
         void *res = realloc(
                 array->values,
@@ -26,14 +26,14 @@ void daCheckExtend(DynamicArray *array) {
     }
 }
 
-void daPush(DynamicArray *array, Object *obj) {
-    daCheckExtend(array);
+void daPushE(DynamicArray *array, Object *obj) {
+    daCheckExtendE(array);
     if (!check_err) {
         array->values[array->len++] = obj;
     }
 }
 
-Object *daPop(DynamicArray *array) {
+Object *daPopE(DynamicArray *array) {
     Object *object = NULL;
     if (0 == array->len) {
         natrix_error = NO_VALUE_ERR;
@@ -47,7 +47,7 @@ void clear(DynamicArray *array) {
     array->len = 0;
 }
 
-Object *daGet(DynamicArray *array, int32_t n) {
+Object *daGetE(DynamicArray *array, int32_t n) {
     Object *object = NULL;
     if (n < 0) n += array->len;
     if ((n < 0) || (n > array->len)) {

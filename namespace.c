@@ -4,23 +4,23 @@
 
 #include "namespace.h"
 
-void initElement(Element *element, char *name, Object* object) {
+void naInitElement(Element *element, char *name, Object *object) {
     strncpy(element->name, name, VALUE_NAME_MAX_SIZE);
     element->object = object;
     element->next = NULL;
 }
 
-void initNamespace(Namespace *ns, Namespace *parent) {
+void naInit(Namespace *ns, Namespace *parent) {
     ns->values = NULL;
     ns->parent = parent;
 }
 
-void pushElement(Namespace *ns, char *name, Object *object) {
+void naPushElementE(Namespace *ns, char *name, Object *object) {
     Element *el = malloc(sizeof(Element));
     if (!el) {
         natrix_error = ALLOC_ERR;
     }  else {
-        initElement(el, name, object);
+        naInitElement(el, name, object);
         if (!ns->values) {
             ns->values = el;
         } else {
@@ -44,7 +44,7 @@ void pushElement(Namespace *ns, char *name, Object *object) {
     }
 }
 
-Element* insideFind(Namespace *ns, const char *name) {
+Element* naInsideFind(Namespace *ns, const char *name) {
     Element *el = ns->values;
     while (el) {
         if (0 == strncmp(el->name, name, VALUE_NAME_MAX_SIZE)) {
@@ -55,10 +55,10 @@ Element* insideFind(Namespace *ns, const char *name) {
     return NULL;
 }
 
-Object *find(Namespace *ns, const char *name) {
+Object *naFind(Namespace *ns, const char *name) {
     Element *el;
     while (ns) {
-        el = insideFind(ns, name);
+        el = naInsideFind(ns, name);
         if (el) {
             return el->object;
         }
@@ -67,7 +67,7 @@ Object *find(Namespace *ns, const char *name) {
     return NULL;
 }
 
-void printNamespace(Namespace *ns) {
+void naPrint(Namespace *ns) {
     Element *el = ns->values;
     while (el) {
         printf("%s: ", el->name);

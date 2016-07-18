@@ -18,8 +18,8 @@ typedef struct _Namespace {
     struct _Namespace *parent;
 } Namespace;
 
-void initElement(Element *element, char *name, Object* object);
-void initNamespace(Namespace *ns, Namespace *parent);
-void pushElement(Namespace *ns, char *name, Object *object);
-Object * find(Namespace *ns, const char *name);
-void printNamespace(Namespace *ns);
+void naInitElement(Element *element, char *name, Object *object);
+void naInit(Namespace *ns, Namespace *parent);
+void naPushElementE(Namespace *ns, char *name, Object *object);
+Object * naFind(Namespace *ns, const char *name);
+void naPrint(Namespace *ns);
