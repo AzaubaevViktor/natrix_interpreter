@@ -13,7 +13,7 @@
  * Пустая инструкция
  */
 
-#define END (0xFE)
+#define END (0xED)
 /*
  * Конец байткода
  */
@@ -26,7 +26,7 @@
 
 #define POP_VALUE (0x3)
 
-#define CALL (0x4)
+#define CALL (0xCA)
 /*
  * CALL (NUMBER 1b)
  * Вызывает функцию под номером
@@ -37,6 +37,17 @@
  * STORE_VALUE
  * Берёт имя и значение из стека и сохраняет в текущий namespace
  * START_STACK -> ... -> obj -> name -> END_STACK
+ */
+
+#define GET_VALUE (0x6)
+/*
+ * Достаёт значение из namespace и кладёт в стек
+ */
+
+#define PRINT_STR (0x7)
+/*
+ * Печатает последний объект со стека
+ * Как будто __str__, которого нет
  */
 
 

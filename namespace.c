@@ -44,7 +44,7 @@ void pushElement(Namespace *ns, char *name, Object *object) {
     }
 }
 
-Element *insideFind(Namespace *ns, const char *name) {
+Element* insideFind(Namespace *ns, const char *name) {
     Element *el = ns->values;
     while (el) {
         if (0 == strncmp(el->name, name, VALUE_NAME_MAX_SIZE)) {
@@ -55,12 +55,12 @@ Element *insideFind(Namespace *ns, const char *name) {
     return NULL;
 }
 
-Element *find(Namespace *ns, const char *name) {
+Object *find(Namespace *ns, const char *name) {
     Element *el;
     while (ns) {
         el = insideFind(ns, name);
         if (el) {
-            return el;
+            return el->object;
         }
         ns = ns->parent;
     }

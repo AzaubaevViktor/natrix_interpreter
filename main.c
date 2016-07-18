@@ -6,21 +6,35 @@
 int main() {
     Interpreter interpreter;
     initInterpreter(&interpreter);
-    char bytecode[] = "\x02\x01\x01\x00\x00\x00"
-            "\x04\x00"
+    char bytecode[] = "\x02\x01\x10\x00\x00\x00"
+            "\xCA\x00"
             "\x02\x05\x05hello"
-            "\x04\x00"
+            "\xCA\x00"
+            "\x02\x05\x01\n"
+            "\x07"
             "\x05"
-            "\x04\x01"
-            "\xFE";
+            "\xCA\x01"
+            "\x02\x05\x05hello"
+            "\x06"
+            "\xCA\x00"
+            "\x02\x05\x01\n"
+            "\x07"
+            "\xED";
     memcpy(interpreter.bytecode, bytecode, sizeof(bytecode));
     /*
-     * PUSH_VALUE OBJECT_TYPE_LINT 1
+     * PUSH_VALUE OBJECT_TYPE_LINT 16
      * CALL 0 // printStackObject
      * PUSH_VALUE OBJECT_TYPE_STRING 5 'hello'
      * CALL 0 // printStackObject
+     * PUSH_VALUE OBJECT_TYPE_STRING 1 '\n'
+     * PRINT_STR
      * STORE_VALUE
      * CALL 1 // printNamespace
+     * PUSH_VALUE OBJECT_TYPE_STRING 5 'hello'
+     * GET_VALUE
+     * CALL 0
+     * PUSH_VALUE OBJECT_TYPE_STRING 1 '\n'
+     * PRINT_STR
      * END
      */
     while (1) {

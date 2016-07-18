@@ -21,5 +21,5 @@ typedef struct _Namespace {
 void initElement(Element *element, char *name, Object* object);
 void initNamespace(Namespace *ns, Namespace *parent);
 void pushElement(Namespace *ns, char *name, Object *object);
-Element *find(Namespace *ns, const char *name);
+Object * find(Namespace *ns, const char *name);
 void printNamespace(Namespace *ns);

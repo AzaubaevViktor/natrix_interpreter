@@ -20,6 +20,16 @@ void initInterpreter(Interpreter *interpreter) {
 
 #define getBytecode() interpreter->bytecode[interpreter->PC++];
 
+Object *getStrFromStack(Interpreter *interpreter) {
+    Object *strObj = daPop(&interpreter->valuesStack);
+    if check_err return NULL;
+    if (OBJECT_TYPE_STRING != strObj->type) {
+        natrix_error = WRONG_VALUE_TYPE_ERR;
+        return NULL;
+    }
+    return strObj;
+}
+
 void step(Interpreter *interpreter) {
     uint8_t bytecode = getBytecode();
     switch (bytecode) {
@@ -77,21 +87,35 @@ void step(Interpreter *interpreter) {
             break;
         }
         case STORE_VALUE: {
-            Object *name = daPop(&interpreter->valuesStack);
+            Object *name = getStrFromStack(interpreter);
             if check_err break;
             Object *obj = daPop(&interpreter->valuesStack);
             if check_err break;
 
-            if (OBJECT_TYPE_STRING != name->type) {
-                natrix_error = WRONG_VALUE_TYPE_ERR;
-                break;
-            }
             if (strlen(name->vString) > VALUE_NAME_MAX_SIZE) {
                 natrix_error = VALUE_NAME_TOO_LONG_ERR;
                 break;
             }
             pushElement(&interpreter->namespace, name->vString, obj);
             if check_err break;
+            break;
+        }
+        case GET_VALUE: {
+            Object *name = getStrFromStack(interpreter);
+            if check_err break;
+            Object *obj = find(&interpreter->namespace, name->vString);
+            if (!obj) {
+                natrix_error = OBJECT_NOT_IN_NAMESPACE;
+                break;
+            }
+            daPush(&interpreter->valuesStack, obj);
+            break;
+        }
+        case PRINT_STR: {
+            Object *name = getStrFromStack(interpreter);
+            if check_err break;
+
+            printf("%s", name->vString);
             break;
         }
         default:
