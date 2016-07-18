@@ -14,11 +14,8 @@ Object *newObject() {
 
 void printObjectInfo(Object *object) {
     switch (object->type) {
-        case OBJECT_TYPE_LINT:
-            printf("LINT: `%hi`", object->vLInt);
-            break;
-        case OBJECT_TYPE_ULINT:
-            printf("ULINT: `%hu`", object->vULInt);
+        case OBJECT_TYPE_INT:
+            printf("LINT: `%hi`", object->vInt);
             break;
         case OBJECT_TYPE_DOUBLE:
             printf("LINT: `%lf`", object->vDouble);
@@ -33,4 +30,12 @@ void printObjectInfo(Object *object) {
             printf("Unknown type of object");
             break;
     }
+}
+
+int isInt(Object *object) {
+    return OBJECT_TYPE_INT == object->type;
+}
+
+int isDouble(Object *object) {
+    return OBJECT_TYPE_DOUBLE == object->type;
 }

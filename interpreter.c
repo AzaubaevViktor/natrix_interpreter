@@ -48,13 +48,9 @@ void step(Interpreter *interpreter) {
             object->type = type;
 
             switch (type) {
-                case OBJECT_TYPE_LINT:
-                    object->vLInt = *(int16_t *) (interpreter->bytecode + interpreter->PC);
+                case OBJECT_TYPE_INT:
+                    object->vInt = *(int16_t *) (interpreter->bytecode + interpreter->PC);
                     interpreter->PC += sizeof(int16_t);
-                    break;
-                case OBJECT_TYPE_ULINT:
-                    object->vULInt = *(uint16_t *) (interpreter->bytecode + interpreter->PC);
-                    interpreter->PC += sizeof(uint16_t);
                     break;
                 case OBJECT_TYPE_DOUBLE:
                     object->vDouble = *(double *) (interpreter->bytecode + interpreter->PC);
@@ -116,6 +112,28 @@ void step(Interpreter *interpreter) {
             if check_err break;
 
             printf("%s", name->vString);
+            break;
+        }
+        case PLUS: {
+            Object *obj2 = daPop(&interpreter->valuesStack);
+            if check_err break;
+            Object *obj1 = daPop(&interpreter->valuesStack);
+            if check_err break;
+            Object *result = newObject();
+            if check_err break;
+
+            if (isInt(obj1) && isInt(obj2)) {
+                result->type = OBJECT_TYPE_INT;
+                result->vInt = obj1->vInt + obj2->vInt;
+                daPush(&interpreter->valuesStack, result);
+            } else if (isDouble(obj1) || isDouble(obj2)) {
+                result->type = OBJECT_TYPE_DOUBLE;
+                result->vDouble = isDouble(obj1) ? obj1->vDouble : obj1->vInt;
+                result->vDouble += isDouble(obj2) ? obj2->vDouble : obj2->vInt;
+                daPush(&interpreter->valuesStack, result);
+            } else {
+                natrix_error = WRONG_VALUE_TYPE_ERR;
+            }
             break;
         }
         default:

@@ -19,10 +19,15 @@ int main() {
             "\xCA\x00"
             "\x02\x05\x01\n"
             "\x07"
+            "\x02\x05\x0BPlus 100 = "
+            "\x07"
+            "\x02\x01\x64\x00\x00\x00"
+            "\x08"
+            "\xCA\x00"
             "\xED";
     memcpy(interpreter.bytecode, bytecode, sizeof(bytecode));
     /*
-     * PUSH_VALUE OBJECT_TYPE_LINT 16
+     * PUSH_VALUE OBJECT_TYPE_INT 16
      * CALL 0 // printStackObject
      * PUSH_VALUE OBJECT_TYPE_STRING 5 'hello'
      * CALL 0 // printStackObject
@@ -35,6 +40,11 @@ int main() {
      * CALL 0
      * PUSH_VALUE OBJECT_TYPE_STRING 1 '\n'
      * PRINT_STR
+     * PUSH_VALUE OBJECT_TYPE_STRING B 'Plus 100 = '
+     * PRINT_STR
+     * PUSH_VALUE OBJECT_TYPE_INT 100
+     * PLUS
+     * CALL 0
      * END
      */
     while (1) {
