@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <cstdarg>
+#include <stdint.h>
 #include "errors.h"
 
 #define OBJECT_TYPE_LINT (1)
@@ -13,12 +13,10 @@
 typedef struct _Object {
     unsigned int type;
     union {
-//        long int vLInt;
-//        unsigned long int vULInt;
-        int vLInt;
-        unsigned int vULInt;
+        int16_t vLInt;
+        uint16_t vULInt;
         double vDouble;
-        char vChar;
+        uint8_t vChar;
     };
 } Object;
 

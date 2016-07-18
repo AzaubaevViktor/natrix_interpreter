@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "natrix_object.h"
 #include "errors.h"
 #include "dynamic_array.h"
@@ -39,7 +40,7 @@
 
 
 typedef struct _Interpreter {
-    u_char bytecode[100];
+    uint8_t bytecode[100];
     int bytecodePos;
     int PC;
 
