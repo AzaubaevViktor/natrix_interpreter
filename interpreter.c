@@ -5,14 +5,17 @@
 #include "interpreter.h"
 
 
-void printInfo(Interpreter *interpreter);
+void _printStackObject(Interpreter *interpreter);
+void _printNamespace(Interpreter *interpreter);
 
 void initInterpreter(Interpreter *interpreter) {
     interpreter->PC = 0;
     interpreter->bytecodePos = 0;
     daInit(&interpreter->valuesStack);
     if check_err return;
-    *(interpreter->builtins) = printInfo;
+    initNamespace(&interpreter->namespace, NULL);
+    *(interpreter->builtins) = _printStackObject;
+    *(interpreter->builtins + 1) = _printNamespace;
 }
 
 #define getBytecode() interpreter->bytecode[interpreter->PC++];
@@ -73,15 +76,38 @@ void step(Interpreter *interpreter) {
             interpreter->builtins[number](interpreter);
             break;
         }
+        case STORE_VALUE: {
+            Object *name = daPop(&interpreter->valuesStack);
+            if check_err break;
+            Object *obj = daPop(&interpreter->valuesStack);
+            if check_err break;
+
+            if (OBJECT_TYPE_STRING != name->type) {
+                natrix_error = WRONG_VALUE_TYPE_ERR;
+                break;
+            }
+            if (strlen(name->vString) > VALUE_NAME_MAX_SIZE) {
+                natrix_error = VALUE_NAME_TOO_LONG_ERR;
+                break;
+            }
+            pushElement(&interpreter->namespace, name->vString, obj);
+            if check_err break;
+            break;
+        }
         default:
             natrix_error = UNKNOWN_BYTECODE;
             break;
     }
 }
 
-void printInfo(Interpreter *interpreter) {
+void _printStackObject(Interpreter *interpreter) {
     Object *object = daPop(&interpreter->valuesStack);
     if (!check_err) {
         printObjectInfo(object);
     }
+    daPush(&interpreter->valuesStack, object);
+}
+
+void _printNamespace(Interpreter *interpreter) {
+    printNamespace(&interpreter->namespace);
 }

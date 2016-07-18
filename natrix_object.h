@@ -18,7 +18,7 @@ typedef struct _Object {
         uint16_t vULInt;
         double vDouble;
         uint8_t vChar;
-        uint8_t *vString;
+        char *vString;
     };
 } Object;
 

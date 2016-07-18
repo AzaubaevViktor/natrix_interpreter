@@ -6,6 +6,7 @@
 #include "natrix_object.h"
 #include "errors.h"
 #include "dynamic_array.h"
+#include "namespace.h"
 
 #define NOP (0x0)
 /*
@@ -33,8 +34,9 @@
 
 #define STORE_VALUE (0x5)
 /*
- * STORE_VALUE (NUMBER 1b)
- * Берёт из value и сохраняет в namespace под нужным номером
+ * STORE_VALUE
+ * Берёт имя и значение из стека и сохраняет в текущий namespace
+ * START_STACK -> ... -> obj -> name -> END_STACK
  */
 
 
@@ -45,6 +47,8 @@ typedef struct _Interpreter {
     int PC;
 
     DynamicArray valuesStack;
+
+    Namespace namespace;
 
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;
