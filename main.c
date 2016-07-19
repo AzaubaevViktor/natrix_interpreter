@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "interpreter.h"
+#include "bytecode_debug.h"
 
 
 int main() {
     Interpreter interpreter;
     inInitE(&interpreter);
-    char bytecode[] = "\x02\x01\x10\x00\x00\x00"
+    uint8_t bytecode[] = "\x02\x01\x10\x00\x00\x00"
             "\xCA\x00"
             "\x02\x05\x05hello"
             "\xCA\x00"
@@ -25,6 +26,7 @@ int main() {
             "\x08"
             "\xCA\x00"
             "\xED";
+    printBytecode(bytecode);
     memcpy(interpreter.bytecode, bytecode, sizeof(bytecode));
     /*
      * PUSH_VALUE OBJECT_TYPE_INT 16

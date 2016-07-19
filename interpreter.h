@@ -58,7 +58,7 @@
 
 
 typedef struct _Interpreter {
-    uint8_t bytecode[100];
+    uint8_t bytecode[128];
     int bytecodePos;
     int PC;
 

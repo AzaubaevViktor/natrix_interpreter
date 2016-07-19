@@ -34,7 +34,6 @@ void inStepE(Interpreter *interpreter) {
     uint8_t bytecode = getBytecode();
     switch (bytecode) {
         case NOP: {
-            ++interpreter->PC;
             break;
         }
         case END: {
@@ -49,8 +48,8 @@ void inStepE(Interpreter *interpreter) {
 
             switch (type) {
                 case OBJECT_TYPE_INT:
-                    object->vInt = *(int16_t *) (interpreter->bytecode + interpreter->PC);
-                    interpreter->PC += sizeof(int16_t);
+                    object->vInt = *(int32_t *) (interpreter->bytecode + interpreter->PC);
+                    interpreter->PC += sizeof(int32_t);
                     break;
                 case OBJECT_TYPE_DOUBLE:
                     object->vDouble = *(double *) (interpreter->bytecode + interpreter->PC);

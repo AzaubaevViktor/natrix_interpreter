@@ -13,7 +13,7 @@
 typedef struct _Object {
     unsigned int type;
     union {
-        int16_t vInt;
+        int32_t vInt;
         double vDouble;
         uint8_t vChar;
         char *vString;
