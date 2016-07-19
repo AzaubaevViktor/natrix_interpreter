@@ -8,7 +8,7 @@ Object *newObjectE() {
     Object *object = (Object *) calloc(1, sizeof(Object));
     if (object) {
         //TODO: Придумать, как не создавать его лишний раз
-//        ndInit(object->fields, NULL);
+        ndInit(&object->fields, NULL);
     } else {
         natrix_error = ALLOC_ERR;
     }
@@ -27,7 +27,9 @@ void printObjectInfo(Object *object) {
             printf("LINT: `%c`", object->vChar);
             break;
         case OBJECT_TYPE_STRING:
-            printf("STRING: `%s`", object->vString);
+            printf("STRING: len:%lu `%s`",
+                   strlen(object->vString),
+                   object->vString);
             break;
         default:
             printf("Unknown type of object");

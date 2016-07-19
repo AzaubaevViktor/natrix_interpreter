@@ -18,37 +18,12 @@ extern int natrix_error;
 #define END_BYTECODE_ERR (6)
 #define WRONG_VALUE_TYPE_ERR (7)
 #define VALUE_NAME_TOO_LONG_ERR (8)
-#define OBJECT_NOT_IN_NAMESPACE (9)
+#define OBJECT_NOT_IN_NAMESPACE_ERR (9)
+#define INVALID_FIELD_NAME_ERR (10)
 
-#define check_err (NO_ERR != natrix_error)
+#define checkErr (NO_ERR != natrix_error)
 #define check_end (END_BYTECODE_ERR == natrix_error)
 
-// FORWARD DECLARATION OF NATIVE DICT
-
-typedef struct _NativeDict NativeDict;
-
-// NATRIX OBJECT
-
-#define OBJECT_TYPE_INT (0x1)
-#define OBJECT_TYPE_DOUBLE (0x3)
-#define OBJECT_TYPE_CHAR (0x4)
-#define OBJECT_TYPE_STRING (0x5)
-
-typedef struct _Object {
-    unsigned int type;
-    union {
-        int32_t vInt;
-        double vDouble;
-        uint8_t vChar;
-        char *vString;
-    };
-    struct _NativeDict *fields;
-} Object;
-
-Object *newObjectE();
-void printObjectInfo(Object *object);
-int isInt(Object *object);
-int isDouble(Object *object);
 
 // NATIVE DICT
 
@@ -66,11 +41,35 @@ typedef struct _NativeDict {
     struct _NativeDict *parent;
 } NativeDict;
 
-void ndInitElement(Element *element, char *name, Object *object);
+void ndInitElement(Element *element, char *name, struct _Object *object);
 void ndInit(NativeDict *ns, NativeDict *parent);
-void ndPushElementE(NativeDict *ns, char *name, Object *object);
-Object * ndFind(NativeDict *ns, const char *name);
+void ndPushElementE(NativeDict *ns, char *name, struct _Object *object);
+struct _Object * ndFind(NativeDict *ns, const char *name);
 void ndPrint(NativeDict *ns);
+
+
+// NATRIX OBJECT
+
+#define OBJECT_TYPE_INT (0x1)
+#define OBJECT_TYPE_DOUBLE (0x3)
+#define OBJECT_TYPE_CHAR (0x4)
+#define OBJECT_TYPE_STRING (0x5)
+
+typedef struct _Object {
+    unsigned int type;
+    union {
+        int32_t vInt;
+        double vDouble;
+        uint8_t vChar;
+        char *vString;
+    };
+    struct _NativeDict fields;
+} Object;
+
+Object *newObjectE();
+void printObjectInfo(Object *object);
+int isInt(Object *object);
+int isDouble(Object *object);
 
 // NATIVE ARRAY
 
@@ -125,6 +124,7 @@ Object *daGetE(DynamicArray *array, int32_t n);
 #define GET_VALUE (0x6)
 /*
  * Достаёт значение из namespace и кладёт в стек
+ * START_STACK -> ... -> var_name -> END_STACK
  */
 
 #define PRINT_STR (0x7)

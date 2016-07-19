@@ -3,27 +3,27 @@
 
 #define next() (PC++, curSym++)
 #define nextTo(v) (PC += (v), curSym += (v))
-#define printPC() printf("%d ", PC)
+#define printPC() printf("%-6d ", PC)
 
 void printBytecode(uint8_t *bytecode) {
     int PC = 0;
     uint8_t *curSym = bytecode;
 
-    while (*curSym != END && !check_err) {
+    while (*curSym != END && !checkErr) {
         printPC();
         uint8_t code = *curSym;
         next();
     
         switch (code) {
-            case NOP: {
+            case NOP:
                 printf("NOP");
                 break;
-            }
-            case END: {
+
+            case END:
                 // Никогда сюда никто не зайдёт(
                 printf("END");
                 break;
-            }
+
             case PUSH_VALUE: {
                 printf("PUSH_VALUE ");
 
@@ -61,7 +61,7 @@ void printBytecode(uint8_t *bytecode) {
                 printf("(");
                 printObjectInfo(object);
                 printf(")");
-                if check_err break;
+                if checkErr break;
 
                 break;
             }
@@ -72,22 +72,30 @@ void printBytecode(uint8_t *bytecode) {
                 printf("CALL %d", number);
                 break;
             }
-            case STORE_VALUE: {
+            case STORE_VALUE:
                 printf("STORE_VALUE");
                 break;
-            }
-            case GET_VALUE: {
+
+            case GET_VALUE:
                 printf("GET_VALUE");
                 break;
-            }
-            case PRINT_STR: {
+
+            case PRINT_STR:
                 printf("PRINT_STR");
                 break;
-            }
-            case PLUS: {
+
+            case PLUS:
                 printf("PLUS");
                 break;
-            }
+
+            case STORE_FIELD:
+                printf("STORE_FIELD");
+                break;
+
+            case GET_FIELD:
+                printf("GET_FIELD");
+                break;
+
             default:
                 natrix_error = UNKNOWN_BYTECODE;
                 break;
@@ -95,7 +103,7 @@ void printBytecode(uint8_t *bytecode) {
 
         printf("\n");
     }
-    if check_err {
+    if checkErr {
         printf("Natrix bytecode parse error: %d\n", natrix_error);
         natrix_error = 0;
     } else {

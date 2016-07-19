@@ -12,7 +12,7 @@ void inInitE(Interpreter *interpreter) {
     interpreter->PC = 0;
     interpreter->bytecodePos = 0;
     daInitE(&interpreter->valuesStack);
-    if check_err return;
+    if checkErr return;
     ndInit(&interpreter->namespace, NULL);
     *(interpreter->builtins) = _printStackObject;
     *(interpreter->builtins + 1) = _printNamespace;
@@ -22,9 +22,13 @@ void inInitE(Interpreter *interpreter) {
 
 #define popStackE() daPopE(&interpreter->valuesStack)
 
-Object *inGetStrFromStackE(Interpreter *interpreter) {
-    Object *strObj = daPopE(&interpreter->valuesStack);
-    if check_err return NULL;
+#define popStrStackE() _popStrStackE(interpreter)
+
+#define pushStackE(obj) daPushE(&interpreter->valuesStack, (obj))
+
+Object *_popStrStackE(Interpreter *interpreter) {
+    Object *strObj = popStackE();
+    if checkErr return NULL;
     if (OBJECT_TYPE_STRING != strObj->type) {
         natrix_error = WRONG_VALUE_TYPE_ERR;
         return NULL;
@@ -45,7 +49,7 @@ void inStepE(Interpreter *interpreter) {
         case PUSH_VALUE: {
             uint8_t type = getBytecode();
             Object *object = newObjectE();
-            if check_err return;
+            if checkErr return;
             object->type = type;
 
             switch (type) {
@@ -73,9 +77,9 @@ void inStepE(Interpreter *interpreter) {
                 default:
                     natrix_error = UNKNOWN_VALUE_TYPE_ERR;
             }
-            if check_err break;
+            if checkErr break;
 
-            daPushE(&interpreter->valuesStack, object);
+            pushStackE(object);
             break;
         }
         case CALL: {
@@ -84,61 +88,92 @@ void inStepE(Interpreter *interpreter) {
             break;
         }
         case STORE_VALUE: {
-            Object *name = inGetStrFromStackE(interpreter);
-            if check_err break;
-            Object *obj = daPopE(&interpreter->valuesStack);
-            if check_err break;
+            Object *varName = popStrStackE();
+            if checkErr break;
+            Object *objValue = popStackE();
+            if checkErr break;
 
-            if (strlen(name->vString) > VALUE_NAME_MAX_SIZE) {
+            if (strlen(varName->vString) > VALUE_NAME_MAX_SIZE) {
                 natrix_error = VALUE_NAME_TOO_LONG_ERR;
                 break;
             }
-            ndPushElementE(&interpreter->namespace, name->vString, obj);
-            if check_err break;
+            ndPushElementE(&interpreter->namespace, varName->vString, objValue);
+            if checkErr break;
             break;
         }
         case GET_VALUE: {
-            Object *name = inGetStrFromStackE(interpreter);
-            if check_err break;
-            Object *obj = ndFind(&interpreter->namespace, name->vString);
-            if (!obj) {
-                natrix_error = OBJECT_NOT_IN_NAMESPACE;
+            Object *varName = popStrStackE();
+            if checkErr break;
+            Object *objValue = ndFind(&interpreter->namespace, varName->vString);
+            if (!objValue) {
+                natrix_error = OBJECT_NOT_IN_NAMESPACE_ERR;
                 break;
             }
-            daPushE(&interpreter->valuesStack, obj);
+            pushStackE(objValue);
             break;
         }
         case PRINT_STR: {
-            Object *name = inGetStrFromStackE(interpreter);
-            if check_err break;
+            Object *strObj = popStrStackE();
+            if checkErr break;
 
-            printf("%s", name->vString);
+            printf("%s", strObj->vString);
             break;
         }
         case PLUS: {
-            Object *obj2 = daPopE(&interpreter->valuesStack);
-            if check_err break;
-            Object *obj1 = daPopE(&interpreter->valuesStack);
-            if check_err break;
+            Object *right = popStackE();
+            if checkErr break;
+            Object *left = popStackE();
+            if checkErr break;
             Object *result = newObjectE();
-            if check_err break;
+            if checkErr break;
 
-            if (isInt(obj1) && isInt(obj2)) {
+            if (isInt(left) && isInt(right)) {
                 result->type = OBJECT_TYPE_INT;
-                result->vInt = obj1->vInt + obj2->vInt;
-                daPushE(&interpreter->valuesStack, result);
-            } else if (isDouble(obj1) || isDouble(obj2)) {
+                result->vInt = left->vInt + right->vInt;
+                pushStackE(result);
+            } else if (isDouble(left) || isDouble(right)) {
                 result->type = OBJECT_TYPE_DOUBLE;
-                result->vDouble = isDouble(obj1) ? obj1->vDouble : obj1->vInt;
-                result->vDouble += isDouble(obj2) ? obj2->vDouble : obj2->vInt;
-                daPushE(&interpreter->valuesStack, result);
+                result->vDouble = isDouble(left) ? left->vDouble : left->vInt;
+                result->vDouble += isDouble(right) ? right->vDouble : right->vInt;
+                pushStackE(result);
             } else {
                 natrix_error = WRONG_VALUE_TYPE_ERR;
             }
             break;
         }
         case STORE_FIELD: {
-            Object *target_object = NULL;
+            Object *targetObject = popStackE();
+            if checkErr break;
+            Object *fieldName = popStrStackE();
+            if checkErr break;
+            Object *objValue = popStackE();
+            if checkErr break;
+
+            ndPushElementE(&targetObject->fields,
+                           fieldName->vString,
+                           objValue
+            );
+            break;
+        }
+        case GET_FIELD: {
+            Object *targetObject = popStackE();
+            if checkErr break;
+            Object *fieldName = popStrStackE();
+            if checkErr break;
+
+            Object *objValue = ndFind(
+                    &targetObject->fields,
+                    fieldName->vString
+            );
+
+            if (!objValue) {
+                natrix_error = INVALID_FIELD_NAME_ERR;
+                break;
+            }
+
+            pushStackE(objValue);
+            if checkErr break;
+            break;
         }
         default:
             natrix_error = UNKNOWN_BYTECODE;
@@ -146,16 +181,23 @@ void inStepE(Interpreter *interpreter) {
     }
 }
 
+#define RED "\x1B[31m"
+#define RESET "\x1B[0m"
+
 void _printStackObject(Interpreter *interpreter) {
-    Object *object = daPopE(&interpreter->valuesStack);
-    if (!check_err) {
+    printf(RED "\nDEBUG PRINT LAST STACK\n");
+    Object *object = popStackE();
+    if (!checkErr) {
         printObjectInfo(object);
     }
-    daPushE(&interpreter->valuesStack, object);
+    pushStackE(object);
+    printf("\nEND DEBUG\n" RESET);
 }
 
 void _printNamespace(Interpreter *interpreter) {
+    printf(RED "\nDEBUG PRINT NAMESPACE\n");
     ndPrint(&interpreter->namespace);
+    printf("\nEND DEBUG\n" RESET);
 }
 
 #undef popStackE

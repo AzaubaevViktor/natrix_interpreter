@@ -70,8 +70,9 @@ Object *ndFind(NativeDict *ns, const char *name) {
 void ndPrint(NativeDict *ns) {
     Element *el = ns->values;
     while (el) {
-        printf("%s: ", el->name);
+        printf("%-20s(", el->name);
         printObjectInfo(el->object);
+        printf(")");
         el = el->next;
     }
 }

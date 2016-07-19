@@ -28,7 +28,7 @@ void daCheckExtendE(DynamicArray *array) {
 
 void daPushE(DynamicArray *array, Object *obj) {
     daCheckExtendE(array);
-    if (!check_err) {
+    if (!checkErr) {
         array->values[array->len++] = obj;
     }
 }
