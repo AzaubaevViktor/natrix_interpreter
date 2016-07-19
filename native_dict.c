@@ -2,7 +2,7 @@
 // Created by ktulhy on 7/18/16.
 //
 
-#include "native_dict.h"
+#include "natrix.h"
 
 void ndInitElement(Element *element, char *name, Object *object) {
     strncpy(element->name, name, VALUE_NAME_MAX_SIZE);

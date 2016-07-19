@@ -2,11 +2,14 @@
 // Created by ktulhy on 15.07.16.
 //
 
-#include "natrix_object.h"
+#include "natrix.h"
 
 Object *newObjectE() {
     Object *object = (Object *) calloc(1, sizeof(Object));
-    if (!object) {
+    if (object) {
+        //TODO: Придумать, как не создавать его лишний раз
+//        ndInit(object->fields, NULL);
+    } else {
         natrix_error = ALLOC_ERR;
     }
     return object;

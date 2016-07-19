@@ -2,7 +2,7 @@
 // Created by ktulhy on 15.07.16.
 //
 
-#include "interpreter.h"
+#include "natrix.h"
 
 
 void _printStackObject(Interpreter *interpreter);
@@ -19,6 +19,8 @@ void inInitE(Interpreter *interpreter) {
 }
 
 #define getBytecode() interpreter->bytecode[interpreter->PC++];
+
+#define popStackE() daPopE(&interpreter->valuesStack)
 
 Object *inGetStrFromStackE(Interpreter *interpreter) {
     Object *strObj = daPopE(&interpreter->valuesStack);
@@ -135,6 +137,9 @@ void inStepE(Interpreter *interpreter) {
             }
             break;
         }
+        case STORE_FIELD: {
+            Object *target_object = NULL;
+        }
         default:
             natrix_error = UNKNOWN_BYTECODE;
             break;
@@ -152,3 +157,5 @@ void _printStackObject(Interpreter *interpreter) {
 void _printNamespace(Interpreter *interpreter) {
     ndPrint(&interpreter->namespace);
 }
+
+#undef popStackE

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "interpreter.h"
+#include "natrix.h"
 #include "bytecode_debug.h"
 
 

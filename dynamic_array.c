@@ -1,4 +1,4 @@
-#include "dynamic_array.h"
+#include "natrix.h"
 
 void daInitE(DynamicArray *array) {
     array->values = (Object **) malloc(sizeof(Object *) * DYNAMIC_ARRAY_CHUNK_SIZE);

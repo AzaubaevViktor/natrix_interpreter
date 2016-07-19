@@ -1,5 +1,5 @@
 #pragma once
 
-#include "interpreter.h"
+#include "natrix.h"
 
 void printBytecode(uint8_t *bytecode);
