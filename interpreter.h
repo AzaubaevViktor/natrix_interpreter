@@ -6,7 +6,7 @@
 #include "natrix_object.h"
 #include "errors.h"
 #include "dynamic_array.h"
-#include "namespace.h"
+#include "native_dict.h"
 
 #define NOP (0x0)
 /*
@@ -64,7 +64,7 @@ typedef struct _Interpreter {
 
     DynamicArray valuesStack;
 
-    Namespace namespace;
+    NativeDict namespace;
 
     void (*builtins[10])(struct _Interpreter *);
 } Interpreter;

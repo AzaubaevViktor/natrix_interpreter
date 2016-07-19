@@ -13,7 +13,7 @@ void inInitE(Interpreter *interpreter) {
     interpreter->bytecodePos = 0;
     daInitE(&interpreter->valuesStack);
     if check_err return;
-    naInit(&interpreter->namespace, NULL);
+    ndInit(&interpreter->namespace, NULL);
     *(interpreter->builtins) = _printStackObject;
     *(interpreter->builtins + 1) = _printNamespace;
 }
@@ -91,14 +91,14 @@ void inStepE(Interpreter *interpreter) {
                 natrix_error = VALUE_NAME_TOO_LONG_ERR;
                 break;
             }
-            naPushElementE(&interpreter->namespace, name->vString, obj);
+            ndPushElementE(&interpreter->namespace, name->vString, obj);
             if check_err break;
             break;
         }
         case GET_VALUE: {
             Object *name = inGetStrFromStackE(interpreter);
             if check_err break;
-            Object *obj = naFind(&interpreter->namespace, name->vString);
+            Object *obj = ndFind(&interpreter->namespace, name->vString);
             if (!obj) {
                 natrix_error = OBJECT_NOT_IN_NAMESPACE;
                 break;
@@ -150,5 +150,5 @@ void _printStackObject(Interpreter *interpreter) {
 }
 
 void _printNamespace(Interpreter *interpreter) {
-    naPrint(&interpreter->namespace);
+    ndPrint(&interpreter->namespace);
 }

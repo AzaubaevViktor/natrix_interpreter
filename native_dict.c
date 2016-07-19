@@ -2,25 +2,25 @@
 // Created by ktulhy on 7/18/16.
 //
 
-#include "namespace.h"
+#include "native_dict.h"
 
-void naInitElement(Element *element, char *name, Object *object) {
+void ndInitElement(Element *element, char *name, Object *object) {
     strncpy(element->name, name, VALUE_NAME_MAX_SIZE);
     element->object = object;
     element->next = NULL;
 }
 
-void naInit(Namespace *ns, Namespace *parent) {
+void ndInit(NativeDict *ns, NativeDict *parent) {
     ns->values = NULL;
     ns->parent = parent;
 }
 
-void naPushElementE(Namespace *ns, char *name, Object *object) {
+void ndPushElementE(NativeDict *ns, char *name, Object *object) {
     Element *el = malloc(sizeof(Element));
     if (!el) {
         natrix_error = ALLOC_ERR;
     }  else {
-        naInitElement(el, name, object);
+        ndInitElement(el, name, object);
         if (!ns->values) {
             ns->values = el;
         } else {
@@ -44,7 +44,7 @@ void naPushElementE(Namespace *ns, char *name, Object *object) {
     }
 }
 
-Element* naInsideFind(Namespace *ns, const char *name) {
+Element* ndInsideFind(NativeDict *ns, const char *name) {
     Element *el = ns->values;
     while (el) {
         if (0 == strncmp(el->name, name, VALUE_NAME_MAX_SIZE)) {
@@ -55,10 +55,10 @@ Element* naInsideFind(Namespace *ns, const char *name) {
     return NULL;
 }
 
-Object *naFind(Namespace *ns, const char *name) {
+Object *ndFind(NativeDict *ns, const char *name) {
     Element *el;
     while (ns) {
-        el = naInsideFind(ns, name);
+        el = ndInsideFind(ns, name);
         if (el) {
             return el->object;
         }
@@ -67,7 +67,7 @@ Object *naFind(Namespace *ns, const char *name) {
     return NULL;
 }
 
-void naPrint(Namespace *ns) {
+void ndPrint(NativeDict *ns) {
     Element *el = ns->values;
     while (el) {
         printf("%s: ", el->name);

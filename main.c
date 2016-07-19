@@ -36,7 +36,7 @@ int main() {
      * PUSH_VALUE OBJECT_TYPE_STRING 1 '\n'
      * PRINT_STR
      * STORE_VALUE
-     * CALL 1 // naPrint
+     * CALL 1 // ndPrint
      * PUSH_VALUE OBJECT_TYPE_STRING 5 'hello'
      * GET_VALUE
      * CALL 0
