@@ -1,6 +1,6 @@
 Операции над интегральными объектами:
 
-PLUS
+BINARY_ADD
 MINUS
 MUL
 DIV

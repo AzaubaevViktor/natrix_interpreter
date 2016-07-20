@@ -52,7 +52,7 @@ int main() {
      * PUSH_VALUE OBJECT_TYPE_STRING B 'Plus 100 = '
      * PRINT_STR
      * PUSH_VALUE OBJECT_TYPE_INT 100
-     * PLUS
+     * BINARY_ADD
      * CALL 0
      * END
      */

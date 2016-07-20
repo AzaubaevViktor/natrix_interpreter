@@ -70,6 +70,8 @@ Object *newObjectE();
 void printObjectInfo(Object *object);
 int isInt(Object *object);
 int isDouble(Object *object);
+Object *noFindField(Object *object, char *name);
+void noPushInFieldE(Object *object, char *name, Object *val);
 
 // NATIVE ARRAY
 
@@ -86,6 +88,7 @@ void daCheckExtendE(DynamicArray *array);
 void daPushE(DynamicArray *array, Object *obj);
 Object *daPopE(DynamicArray *array);
 Object *daGetE(DynamicArray *array, int32_t n);
+
 
 // INTERPRETER
 
@@ -107,6 +110,9 @@ Object *daGetE(DynamicArray *array, int32_t n);
  */
 
 #define POP_VALUE (0x3)
+/*
+ * Выбрасывает последний элемент со стека
+ */
 
 #define CALL (0xCA)
 /*
@@ -133,24 +139,22 @@ Object *daGetE(DynamicArray *array, int32_t n);
  * Как будто __str__, которого нет
  */
 
-#define PLUS (0x8)
+#define BINARY_ADD (0x8)
 /*
  * Берёт два объекта со стека и складывает их;
  * Резульат кладёт на стек
  */
-#define MUNIS (0x9)
-#define MUL (0xA)
-#define DIV (0xB)
-#define MOD (0xC)
+#define BINARY_SUBSTRACT (0x9)
+#define BINARY_MULTIPLY (0xA)
+#define BINARY_DIV (0xB)
+#define BINARY_MOD (0xC)
 #define STORE_FIELD (0xD)
 /*
- * STORE_FIELD
  * Присваивает объект полю объекта
  * START_STACK -> ... -> obj_value -> field_name -> target_object -> END_STACK
  */
 #define GET_FIELD (0xE)
 /*
- * GET_FIELD
  * Возвращает на стек объект
  * START_STACK -> ... -> field_name -> target_object -> END_STACK
  */

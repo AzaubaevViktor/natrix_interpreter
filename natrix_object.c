@@ -44,3 +44,11 @@ int isInt(Object *object) {
 int isDouble(Object *object) {
     return OBJECT_TYPE_DOUBLE == object->type;
 }
+
+Object *noFindField(Object *object, char *name) {
+    return ndFind(&object->fields, name);
+}
+
+void noPushInFieldE(Object *object, char *name, Object *val) {
+    ndPushElementE(&object->fields, name, val);
+}

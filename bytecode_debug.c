@@ -84,8 +84,8 @@ void printBytecode(uint8_t *bytecode) {
                 printf("PRINT_STR");
                 break;
 
-            case PLUS:
-                printf("PLUS");
+            case BINARY_ADD:
+                printf("BINARY_ADD");
                 break;
 
             case STORE_FIELD:

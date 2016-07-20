@@ -20,21 +20,24 @@ void inInitE(Interpreter *interpreter) {
 
 #define getBytecode() interpreter->bytecode[interpreter->PC++];
 
-#define popStackE() daPopE(&interpreter->valuesStack)
-
-#define popStrStackE() _popStrStackE(interpreter)
+#define popStackToE(name) Object *name = daPopE(&interpreter->valuesStack)
 
 #define pushStackE(obj) daPushE(&interpreter->valuesStack, (obj))
 
-Object *_popStrStackE(Interpreter *interpreter) {
-    Object *strObj = popStackE();
+char *_popStrStackE(Interpreter *interpreter) {
+    popStackToE(strObj);
     if checkErr return NULL;
     if (OBJECT_TYPE_STRING != strObj->type) {
         natrix_error = WRONG_VALUE_TYPE_ERR;
         return NULL;
     }
-    return strObj;
+    return strObj->vString;
 }
+
+#define popStrStackToE(name) char *name = _popStrStackE(interpreter)
+
+#define namespaceFind(varName) ndFind(&interpreter->namespace, varName)
+
 
 void inStepE(Interpreter *interpreter) {
     uint8_t bytecode = getBytecode();
@@ -82,29 +85,34 @@ void inStepE(Interpreter *interpreter) {
             pushStackE(object);
             break;
         }
+        case POP_VALUE: {
+            popStackToE(obj);
+            if checkErr break;
+            break;
+        }
         case CALL: {
             uint8_t number = getBytecode();
             interpreter->builtins[number](interpreter);
             break;
         }
         case STORE_VALUE: {
-            Object *varName = popStrStackE();
+            popStrStackToE(varName);
             if checkErr break;
-            Object *objValue = popStackE();
+            popStackToE(objValue);
             if checkErr break;
 
-            if (strlen(varName->vString) > VALUE_NAME_MAX_SIZE) {
+            if (strlen(varName) > VALUE_NAME_MAX_SIZE) {
                 natrix_error = VALUE_NAME_TOO_LONG_ERR;
                 break;
             }
-            ndPushElementE(&interpreter->namespace, varName->vString, objValue);
+            ndPushElementE(&interpreter->namespace, varName, objValue);
             if checkErr break;
             break;
         }
         case GET_VALUE: {
-            Object *varName = popStrStackE();
+            popStrStackToE(varName);
             if checkErr break;
-            Object *objValue = ndFind(&interpreter->namespace, varName->vString);
+            Object *objValue = namespaceFind(varName);
             if (!objValue) {
                 natrix_error = OBJECT_NOT_IN_NAMESPACE_ERR;
                 break;
@@ -113,16 +121,16 @@ void inStepE(Interpreter *interpreter) {
             break;
         }
         case PRINT_STR: {
-            Object *strObj = popStrStackE();
+            popStrStackToE(strObj);
             if checkErr break;
 
-            printf("%s", strObj->vString);
+            printf("%s", strObj);
             break;
         }
-        case PLUS: {
-            Object *right = popStackE();
+        case BINARY_ADD: {
+            popStackToE(right);
             if checkErr break;
-            Object *left = popStackE();
+            popStackToE(left);
             if checkErr break;
             Object *result = newObjectE();
             if checkErr break;
@@ -142,29 +150,23 @@ void inStepE(Interpreter *interpreter) {
             break;
         }
         case STORE_FIELD: {
-            Object *targetObject = popStackE();
+            popStackToE(targetObject);
             if checkErr break;
-            Object *fieldName = popStrStackE();
+            popStrStackToE(fieldName);
             if checkErr break;
-            Object *objValue = popStackE();
+            popStackToE(objValue);
             if checkErr break;
 
-            ndPushElementE(&targetObject->fields,
-                           fieldName->vString,
-                           objValue
-            );
+            noPushInFieldE(targetObject, fieldName, objValue);
             break;
         }
         case GET_FIELD: {
-            Object *targetObject = popStackE();
+            popStackToE(targetObject);
             if checkErr break;
-            Object *fieldName = popStrStackE();
+            popStrStackToE(fieldName);
             if checkErr break;
 
-            Object *objValue = ndFind(
-                    &targetObject->fields,
-                    fieldName->vString
-            );
+            Object *objValue = noFindField(targetObject, fieldName);
 
             if (!objValue) {
                 natrix_error = INVALID_FIELD_NAME_ERR;
@@ -186,7 +188,7 @@ void inStepE(Interpreter *interpreter) {
 
 void _printStackObject(Interpreter *interpreter) {
     printf(RED "\nDEBUG PRINT LAST STACK\n");
-    Object *object = popStackE();
+    popStackToE(object);
     if (!checkErr) {
         printObjectInfo(object);
     }
@@ -200,4 +202,4 @@ void _printNamespace(Interpreter *interpreter) {
     printf("\nEND DEBUG\n" RESET);
 }
 
-#undef popStackE
+#undef popStackToE
